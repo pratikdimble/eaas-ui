@@ -60,8 +60,9 @@ nav.nav {
 /* Container Layout */
 .dashboard-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   background: #f8f9fa; /* light background for main content */
+  overflow: hidden;
 }
 
 /* Sidebar */
@@ -136,6 +137,8 @@ nav.nav {
 .content {
   flex: 1;
   background: #f8f9fa;
+  overflow-y: auto;
+  padding: 1rem;
 }
 
 /* Responsive adjustments */
