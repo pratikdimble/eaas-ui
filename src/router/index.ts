@@ -3,6 +3,7 @@ import LoginView from '@/views/LoginView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import BatchView from '@/views/BatchView.vue'
 import OnlineView from '@/views/OnlineView.vue'
+import { loggedIn } from '@/auth.js'
 
 const routes = [
   {
@@ -37,6 +38,18 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/'] // login page is public
+  const authRequired = !publicPages.includes(to.path)
+
+  if (authRequired && !loggedIn.value) {
+    // not logged in → redirect to login
+    next({ path: '/' })
+  } else {
+    next()
+  }
 })
 
 export default router

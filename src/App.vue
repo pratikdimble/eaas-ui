@@ -46,12 +46,11 @@
 
 <script setup>
 import { ref } from 'vue'
-import DashboardView from '@/views/DashboardView.vue'
 import { useRouter } from 'vue-router'
+import { loggedIn } from '@/auth.js'
 
 const username = ref('')
 const password = ref('')
-const loggedIn = ref(false)
 const error = ref('')
 const router = useRouter()
 

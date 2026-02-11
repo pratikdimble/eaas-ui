@@ -1,62 +1,60 @@
 <template>
   <div class="vh-100 p-4 dashboard-bg">
     <!-- Header -->
-    <h2 class="mb-3 text-primary">{{ title }}</h2>
-
-    <!-- Stats Cards -->
-    <!-- Legend next to stats -->
-    <div class="d-flex gap-3 mb-4 flex-wrap align-items-center">
-      <div class="stat-card"><strong>Total Models:</strong> {{ totalModels }}</div>
-      <div class="stat-card"><strong>Models With Differences:</strong> {{ diffModels }}</div>
-      <div v-if="responseTime !== null" class="stat-card">
-        <strong>Evaluation Time:</strong> {{ responseTime }} ms
+    <div class="header-wrapper mb-4">
+      <div class="header-top mb-4">
+        <h2 class="text-primary mb-2">{{ title }}</h2>
       </div>
-
-      <!-- Legend -->
-      <div class="legend d-flex align-items-center gap-3">
-        <div class="d-flex align-items-center gap-1">
-          <span class="legend-badge bg-success" title="Records match"></span>
-          <small>Match</small>
+      <!-- Stats Cards + Legend -->
+      <div class="stats-row d-flex gap-3 flex-wrap align-items-center">
+        <div class="stat-card"><strong>Total Models:</strong> {{ totalModels }}</div>
+        <div class="stat-card"><strong>Models With Differences:</strong> {{ diffModels }}</div>
+        <div v-if="responseTime !== null" class="stat-card">
+          <strong>Evaluation Time:</strong> {{ responseTime }} ms
         </div>
-        <div class="d-flex align-items-center gap-1">
-          <span class="legend-badge bg-danger" title="Records mismatch"></span>
-          <small>Mismatch</small>
+
+        <div class="legend d-flex align-items-center gap-3">
+          <div class="d-flex align-items-center gap-1">
+            <span class="legend-badge bg-success" title="Records match"></span>
+            <small>Match</small>
+          </div>
+          <div class="d-flex align-items-center gap-1">
+            <span class="legend-badge bg-danger" title="Records mismatch"></span>
+            <small>Mismatch</small>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Search bar -->
+    <!-- Search -->
     <div class="mb-3 search-wrapper">
       <input
         type="search"
         v-model="searchTermLocal"
         class="form-control search-input"
         placeholder="Search models..."
-        autocomplete="off"
       />
       <i class="bi bi-search search-icon"></i>
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="flex-grow-1 d-flex justify-content-center align-items-center">
+    <div v-if="loading" class="flex-grow-1 d-flex justify-content-center align-items-center my-5">
       <div class="spinner-border text-primary" role="status"></div>
       <span class="ms-2 text-muted">Loading...</span>
     </div>
 
     <!-- Models List -->
     <transition-group name="fade-slide" tag="div" class="models-list">
-      <div v-for="model in paginatedModels" :key="model.model" class="model-card mb-3 shadow-sm">
+      <div v-for="model in paginatedModels" :key="model.model" class="model-card mb-3 shadow">
         <!-- Model Header -->
         <button
           class="btn btn-model-header w-100 d-flex justify-content-between align-items-center"
           @click="toggle(model.model)"
         >
-          <span>
-            {{ model.model }}
-            <small class="text-muted ms-2">
-              (Modified: {{ formatDate(model.modifiedDate) }})
-            </small>
-          </span>
+          <div>
+            <strong>{{ model.model }}</strong>
+            <small class="text-muted ms-2">({{ formatDate(model.modifiedDate) }})</small>
+          </div>
           <small class="text-muted">
             {{ filteredOutputs(model).length }} Differences
             <span v-if="expanded === model.model">▲</span>
@@ -64,7 +62,7 @@
           </small>
         </button>
 
-        <!-- Expanded Section -->
+        <!-- Expanded Table -->
         <transition name="fade-slide-inner">
           <div v-if="expanded === model.model && filteredOutputs(model).length" class="px-3 pb-3">
             <table class="table table-striped table-hover table-sm modern-table">
@@ -245,17 +243,21 @@ const formatDate = (isoString) => {
 </script>
 
 <style scoped>
-/* Background gradient */
 .dashboard-bg {
-  background: linear-gradient(to bottom right, #f0f4ff, #e6f2ff);
+  background: linear-gradient(to bottom right, #eef2f7, #e3e9f1);
   min-height: 100vh;
 }
 
-/* Stats cards */
+/* Header Section */
+.header-section {
+  gap: 1rem;
+}
+
+/* Stat Cards */
 .stat-card {
   background: #fff;
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 12px 20px;
   font-size: 0.95rem;
   font-weight: 500;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -268,28 +270,28 @@ const formatDate = (isoString) => {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
 }
 
-/* Search bar */
+/* Search */
 .search-wrapper {
   position: relative;
-  max-width: 400px;
+  max-width: 420px;
 }
 .search-input {
-  padding-left: 2.5rem;
+  padding-left: 2.8rem;
   border-radius: 25px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 .search-icon {
   position: absolute;
-  left: 12px;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #aaa;
-  font-size: 1.1rem;
+  color: #888;
+  font-size: 1.2rem;
 }
 
-/* Model cards */
+/* Model Cards */
 .model-card {
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
   background-color: #fff;
   transition:
@@ -301,29 +303,31 @@ const formatDate = (isoString) => {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
-/* Model header button */
+/* Model Header Button */
 .btn-model-header {
-  background-color: #e3f2fd;
-  padding: 12px 16px;
+  background-color: #dbe9fa;
+  padding: 14px 18px;
   font-weight: 500;
   text-align: left;
   border: none;
   transition: background 0.2s ease;
+  border-radius: 8px;
+  font-size: 1rem;
 }
 .btn-model-header:hover {
-  background-color: #d0e7fd;
+  background-color: #c8dcf7;
 }
 
-/* Table */
+/* Table Styling */
 .modern-table th,
 .modern-table td {
   vertical-align: middle;
 }
 .header-a {
-  background-color: #cce5ff;
+  background-color: #c9daf8;
 }
 .header-b {
-  background-color: #d4edda;
+  background-color: #d4e9d7;
 }
 .header-diff {
   background-color: #f8d7da;
@@ -336,7 +340,7 @@ const formatDate = (isoString) => {
 /* Badges */
 .badge {
   font-size: 0.85em;
-  padding: 0.35em 0.6em;
+  padding: 0.4em 0.7em;
 }
 
 /* Pagination */
@@ -385,6 +389,8 @@ const formatDate = (isoString) => {
   opacity: 1;
   max-height: 500px;
 }
+
+/* Legend */
 .legend {
   font-size: 0.85rem;
   color: #555;
@@ -392,10 +398,10 @@ const formatDate = (isoString) => {
 
 .legend-badge {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 4px;
   border: 1px solid #ccc;
-  cursor: help; /* indicates tooltip available */
+  cursor: help;
 }
 </style>
