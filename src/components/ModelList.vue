@@ -259,6 +259,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
+import apiClient from '@/axios.js'
 
 // Props
 const props = defineProps({
@@ -289,7 +290,7 @@ const fetchModels = async () => {
   loading.value = true
   const start = performance.now()
   try {
-    const res = await axios.get(props.apiUrl)
+    const res = await apiClient.get(props.apiUrl)
     const end = performance.now()
     responseTime.value = Math.round(end - start)
 
@@ -397,8 +398,8 @@ const downloadModelCsv = async (modelName) => {
   try {
     // You must expose a backend endpoint like:
     //   GET /api/export/detail?model=modelName&isBatch={true|false}
-    const response = await axios.get(
-      `http://localhost:8080/api/export/detail/${encodeURIComponent(modelName)}?isBatch=${props.title.toLowerCase().includes('batch')}`,
+    const response = await apiClient.get(
+      `/export/detail/${encodeURIComponent(modelName)}?isBatch=${props.title.toLowerCase().includes('batch')}`,
       { responseType: 'blob' },
     )
 
@@ -430,8 +431,8 @@ const downloadModelCsv = async (modelName) => {
 // METHOD: download CSV and trigger browser download
 const downloadSummary = async (isBatch) => {
   try {
-    const response = await axios.get(
-      `http://localhost:8080/api/export/summary?isBatch=${props.title.toLowerCase().includes('batch')}`,
+    const response = await apiClient.get(
+      `/export/summary?isBatch=${props.title.toLowerCase().includes('batch')}`,
       {
         responseType: 'blob', // important for binary data
       },

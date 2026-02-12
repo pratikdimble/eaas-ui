@@ -1,9 +1,5 @@
 <template>
-  <ModelList
-    api-url="http://localhost:8080/api/evaluate?isBatch=false"
-    title="Online Models"
-    :page-size="5"
-  />
+  <ModelList api-url="/evaluate?isBatch=false" title="Online Models" :page-size="5" />
 </template>
 
 <script setup>
