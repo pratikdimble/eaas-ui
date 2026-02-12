@@ -3,7 +3,7 @@ import LoginView from '@/views/LoginView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import BatchView from '@/views/BatchView.vue'
 import OnlineView from '@/views/OnlineView.vue'
-import { loggedIn } from '@/auth.js'
+import { setLoggedIn, loggedIn } from '@/auth.js'
 
 const routes = [
   {
@@ -41,11 +41,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ['/'] // login page is public
+  const publicPages = ['/']
   const authRequired = !publicPages.includes(to.path)
 
+  // loggedIn is already restored from localStorage on page load
   if (authRequired && !loggedIn.value) {
-    // not logged in → redirect to login
     next({ path: '/' })
   } else {
     next()

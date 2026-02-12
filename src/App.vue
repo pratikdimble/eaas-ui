@@ -47,7 +47,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { loggedIn } from '@/auth.js'
+import { setLoggedIn, clearLoggedIn, loggedIn } from '@/auth.js'
 
 const username = ref('')
 const password = ref('')
@@ -57,7 +57,7 @@ const router = useRouter()
 const login = () => {
   // simple dummy login
   if (username.value === 'admin' && password.value === 'admin') {
-    loggedIn.value = true
+    setLoggedIn(true)
     error.value = ''
     // Make sure router updates to default nested route
     router.push('/dashboard')
@@ -67,7 +67,7 @@ const login = () => {
 }
 
 const logout = () => {
-  loggedIn.value = false
+  clearLoggedIn()
   username.value = ''
   password.value = ''
   router.push('/') // go back to login

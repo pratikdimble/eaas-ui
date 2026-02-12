@@ -2,7 +2,6 @@
   <div class="login-screen d-flex justify-content-center align-items-center">
     <div class="login-card p-4 shadow rounded">
       <h3 class="mb-4 text-center text-primary">EAAS App</h3>
-
       <div class="form-floating mb-3">
         <input type="text" v-model="username" class="form-control" placeholder="Username" />
         <label>Username</label>
@@ -21,8 +20,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { setLoggedIn } from '@/auth.js'
 
 const username = ref('')
 const password = ref('')
@@ -31,7 +31,7 @@ const router = useRouter()
 
 const login = () => {
   if (username.value === 'admin' && password.value === 'admin') {
-    loggedIn.value = true
+    setLoggedIn(true)
     error.value = ''
     router.push('/dashboard') // redirect to dashboard after login
   } else {

@@ -162,7 +162,6 @@
               <h5 class="modal-clean-title">
                 {{ modalModel ? `Details for ${modalModel.model}` : 'Result' }}
               </h5>
-              <button class="btn-close btn-close-white" @click="modalVisible = false"></button>
             </div>
 
             <!-- Body -->
@@ -464,13 +463,20 @@ const downloadSummary = async (isBatch) => {
 </script>
 
 <style scoped>
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
 .dashboard-bg {
-  background: linear-gradient(to bottom right, #eef2f7, #e3e9f1);
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  height: 100%;
+  overflow: hidden; /* prevent page scroll */
 }
+
 .stat-card {
   background: #fff;
   padding: 0.7rem 1.2rem;
@@ -488,8 +494,14 @@ const downloadSummary = async (isBatch) => {
   font-size: 1.3rem;
 }
 .models-list-wrapper {
-  flex: 1;
-  overflow-y: auto;
+  flex: 1; /* take remaining vertical space */
+  min-height: 0; /* required for proper flex overflow */
+  overflow-y: auto; /* scroll only this section */
+  overflow-x: hidden; /* avoid horizontal scroll */
+}
+.header-wrapper,
+.search-wrapper {
+  flex-shrink: 0; /* they don’t shrink into the scroll area */
 }
 
 /* Modal */
@@ -521,7 +533,8 @@ const downloadSummary = async (isBatch) => {
   font-weight: 600;
 }
 .modal-clean-body {
-  padding: 1rem 1.4rem;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 .modal-clean-footer {
   padding: 0.8rem 1.4rem;
