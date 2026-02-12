@@ -9,6 +9,11 @@
         <div v-if="responseTime !== null" class="stat-card">
           <strong>Evaluation Time:</strong> {{ responseTime }} ms
         </div>
+        <div class="stat-card">
+          <button class="btn btn-success" @click="downloadSummary()">
+            📥 Download {{ title }} CSV
+          </button>
+        </div>
       </div>
     </div>
 
@@ -44,6 +49,14 @@
               <small class="text-muted ms-2">({{ formatDate(model.modifiedDate) }})</small>
             </div>
             <div class="d-flex align-items-center gap-2">
+              <div class="text-end mt-2">
+                <button
+                  class="btn btn-sm btn-outline-success"
+                  @click="downloadModelCsv(model.model)"
+                >
+                  📥 Download CSV
+                </button>
+              </div>
               <span class="badge bg-danger">{{ countDiffs(model) }} Differences</span>
               <span v-if="expanded === model.model">▲</span>
               <span v-else>▼</span>
@@ -377,6 +390,77 @@ const paginatedModalOutputs = computed(() => {
 const modalPrevPage = () => modalCurrentPage.value > 1 && modalCurrentPage.value--
 const modalNextPage = () =>
   modalCurrentPage.value < modalTotalPages.value && modalCurrentPage.value++
+
+// ---------------------------
+// 🗂 Download per Model CSV
+// ---------------------------
+const downloadModelCsv = async (modelName) => {
+  try {
+    // You must expose a backend endpoint like:
+    //   GET /api/export/detail?model=modelName&isBatch={true|false}
+    const response = await axios.get(
+      `http://localhost:8080/api/export/detail/${encodeURIComponent(modelName)}?isBatch=${props.title.toLowerCase().includes('batch')}`,
+      { responseType: 'blob' },
+    )
+
+    // Extract filename from header if available
+    let fileName = `detail_${modelName}.csv`
+    const blob = new Blob([response.data], {
+      type: response.headers['content-type'] || 'text/csv',
+    })
+
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+
+    // Suggest the filename
+    const filename = `detail_${modelName}_${props.title.toLowerCase().includes('batch') ? 'batch' : 'online'}.csv`
+    link.setAttribute('download', filename)
+
+    document.body.appendChild(link)
+    link.click()
+
+    // cleanup
+    link.remove()
+    window.URL.revokeObjectURL(url)
+  } catch (err) {
+    console.error('Download failed:', err)
+    alert('Failed to download the file!')
+  }
+}
+// METHOD: download CSV and trigger browser download
+const downloadSummary = async (isBatch) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/api/export/summary?isBatch=${props.title.toLowerCase().includes('batch')}`,
+      {
+        responseType: 'blob', // important for binary data
+      },
+    )
+
+    const blob = new Blob([response.data], {
+      type: response.headers['content-type'] || 'text/csv',
+    })
+
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+
+    // Suggest the filename
+    const filename = `result_summary_${isBatch ? 'batch' : 'online'}.csv`
+    link.setAttribute('download', filename)
+
+    document.body.appendChild(link)
+    link.click()
+
+    // cleanup
+    link.remove()
+    window.URL.revokeObjectURL(url)
+  } catch (err) {
+    console.error('Download failed:', err)
+    alert('Failed to download the file!')
+  }
+}
 </script>
 
 <style scoped>

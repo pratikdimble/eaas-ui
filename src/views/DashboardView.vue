@@ -24,14 +24,20 @@
 
       <button
         class="btn btn-logout mt-auto d-flex align-items-center justify-content-center"
-        @click="$emit('logout')"
+        @click="logout"
       >
         <i class="bi bi-box-arrow-left me-2"></i> Logout
       </button>
     </aside>
 
     <!-- Main Content -->
-    <main class="content p-4">
+    <main class="main-content">
+      <!-- Header with Download Controls -->
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h3 class="mb-0">EAAS Dashboard</h3>
+      </div>
+
+      <!-- Renders pages like Online / Batch -->
       <router-view />
     </main>
   </div>
@@ -39,6 +45,7 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
+import axios from 'axios'
 
 // Detect current route
 const route = useRoute()
@@ -46,37 +53,34 @@ const router = useRouter()
 
 const isActive = (path) => route.path === path
 
-// emit logout to App.vue
 const logout = () => {
   router.push('/') // go back to login
 }
 </script>
 
 <style scoped>
-nav.nav {
-  flex-grow: 1; /* nav fills available space between title and logout */
-}
-
-/* Container Layout */
+/* ---- Layout Container ---- */
 .dashboard-container {
   display: flex;
   height: 100vh;
-  background: #f8f9fa; /* light background for main content */
   overflow: hidden;
 }
 
-/* Sidebar */
+/* ---- Sidebar ---- */
 .sidebar {
   width: 220px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* ensures logout stays at bottom */
+  justify-content: space-between;
   background: linear-gradient(180deg, #2c3e50, #1a242f);
-  border-radius: 12px;
   color: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  position: fixed;
+  top: 0;
+  bottom: 0;
 }
 
+/* Sidebar Title */
 .sidebar-title {
   font-size: 1.25rem;
   font-weight: bold;
@@ -84,7 +88,7 @@ nav.nav {
   text-transform: uppercase;
 }
 
-/* Navigation Links */
+/* Sidebar Links */
 .sidebar-link {
   padding: 0.75rem 1rem;
   border-radius: 8px;
@@ -103,14 +107,12 @@ nav.nav {
   transform: translateX(3px);
 }
 
-/* Active Link */
 .sidebar-link.active {
   background: #007bff;
   color: #fff;
   font-weight: 600;
 }
 
-/* Icons in Sidebar */
 .sidebar-link i {
   font-size: 1.2rem;
 }
@@ -124,27 +126,24 @@ nav.nav {
   border-radius: 8px;
   font-weight: 500;
   width: 100%;
-  flex-shrink: 0; /* prevent it from shrinking */
-  margin-top: auto; /* always push to bottom */
-  transition: background 0.2s ease;
+  margin-top: auto;
 }
 
 .btn-logout:hover {
   background: #c82333;
 }
 
-/* Main Content Area */
-.content {
+/* ---- Main Content ---- */
+.main-content {
+  margin-left: 220px;
   flex: 1;
   background: #f8f9fa;
   overflow-y: auto;
   padding: 1rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 992px) {
-  .sidebar {
-    width: 200px;
-  }
+/* Buttons */
+.btn-success {
+  margin-left: 0.5rem;
 }
 </style>
