@@ -10,9 +10,7 @@
           <strong>Evaluation Time:</strong> {{ responseTime }} ms
         </div>
         <div class="stat-card">
-          <button class="btn btn-success" @click="downloadSummary()">
-            📥 Download {{ title }} CSV
-          </button>
+          <button class="btn btn-success" @click="downloadSummary()">📥 Download CSV</button>
         </div>
       </div>
     </div>
@@ -135,18 +133,18 @@
     <!-- Main Pagination -->
     <nav v-if="totalPages > 1" class="mt-3">
       <ul class="pagination justify-content-center pagination-modern">
-        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+        <li class="page-item mr-5" :class="{ disabled: currentPage === 1 }">
           <button class="page-link rounded-pill" @click="prevPage">Previous</button>
         </li>
         <li
           v-for="page in totalPages"
           :key="page"
-          class="page-item"
+          class="page-item mr-5"
           :class="{ active: page === currentPage }"
         >
           <button class="page-link rounded-pill" @click="currentPage = page">{{ page }}</button>
         </li>
-        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+        <li class="page-item mr-5" :class="{ disabled: currentPage === totalPages }">
           <button class="page-link rounded-pill" @click="nextPage">Next</button>
         </li>
       </ul>
@@ -549,6 +547,9 @@ body,
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+.mr-5 {
+  margin-right: 5px;
 }
 @keyframes fadeInDown {
   from {
