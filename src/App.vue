@@ -47,27 +47,34 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { setLoggedIn, clearLoggedIn, loggedIn } from '@/auth.js'
+import { clearAuth, setToken, loggedIn } from '@/auth.js'
+import apiClient from '@/axios'
 
 const username = ref('')
 const password = ref('')
 const error = ref('')
 const router = useRouter()
 
-const login = () => {
-  // simple dummy login
-  if (username.value === 'admin' && password.value === 'admin') {
-    setLoggedIn(true)
+const login = async () => {
+  try {
+    const response = await apiClient.post('/auth/login', {
+      username: username.value,
+      password: password.value,
+    })
+
+    const jwt = response.data.token // <-- backend should return { token: "xxxxx" }
+
+    setToken(jwt)
+
     error.value = ''
-    // Make sure router updates to default nested route
     router.push('/dashboard')
-  } else {
+  } catch (err) {
     error.value = 'Invalid credentials'
   }
 }
 
 const logout = () => {
-  clearLoggedIn()
+  clearAuth()
   username.value = ''
   password.value = ''
   router.push('/') // go back to login

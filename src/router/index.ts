@@ -3,7 +3,7 @@ import LoginView from '@/views/LoginView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import BatchView from '@/views/BatchView.vue'
 import OnlineView from '@/views/OnlineView.vue'
-import { setLoggedIn, loggedIn } from '@/auth.js'
+import { token } from '@/auth.js'
 
 const routes = [
   {
@@ -44,9 +44,8 @@ router.beforeEach((to, from, next) => {
   const publicPages = ['/']
   const authRequired = !publicPages.includes(to.path)
 
-  // loggedIn is already restored from localStorage on page load
-  if (authRequired && !loggedIn.value) {
-    next({ path: '/' })
+  if (authRequired && !token.value) {
+    next('/')
   } else {
     next()
   }

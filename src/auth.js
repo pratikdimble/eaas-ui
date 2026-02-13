@@ -1,23 +1,25 @@
 import { ref } from 'vue'
 
-// Read saved value from localStorage (or false if none)
-const stored = localStorage.getItem('loggedIn') === 'true'
+// Read token from localStorage
+const storedToken = localStorage.getItem('token')
 
-export const loggedIn = ref(stored)
+export const token = ref(storedToken || null)
+export const loggedIn = ref(!!storedToken)
 
 /**
- * Updates loggedIn both in the reactive ref and localStorage.
- * @param {boolean} val
+ * Save JWT token
  */
-export function setLoggedIn(val) {
-  loggedIn.value = val
-  localStorage.setItem('loggedIn', val ? 'true' : 'false')
+export function setToken(jwt) {
+  token.value = jwt
+  loggedIn.value = true
+  localStorage.setItem('token', jwt)
 }
 
 /**
- * Clears login state from both ref and storage.
+ * Clear token (logout)
  */
-export function clearLoggedIn() {
+export function clearAuth() {
+  token.value = null
   loggedIn.value = false
-  localStorage.removeItem('loggedIn')
+  localStorage.removeItem('token')
 }

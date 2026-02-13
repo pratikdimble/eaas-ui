@@ -45,8 +45,7 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
-import { clearLoggedIn } from '@/auth.js'
+import { clearAuth } from '@/auth.js'
 
 // Detect current route
 const route = useRoute()
@@ -55,7 +54,7 @@ const router = useRouter()
 const isActive = (path) => route.path === path
 
 const logout = () => {
-  clearLoggedIn()
+  clearAuth()()
   router.push('/') // go back to login
 }
 </script>

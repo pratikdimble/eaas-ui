@@ -20,21 +20,30 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { setLoggedIn } from '@/auth.js'
+import apiClient from '@/axios'
+import { setToken } from '@/auth'
 
 const username = ref('')
 const password = ref('')
 const error = ref('')
 const router = useRouter()
 
-const login = () => {
-  if (username.value === 'admin' && password.value === 'admin') {
-    setLoggedIn(true)
+const login = async () => {
+  try {
+    const response = await apiClient.post('/auth/login', {
+      username: username.value,
+      password: password.value,
+    })
+
+    const jwt = response.data.token // <-- backend should return { token: "xxxxx" }
+
+    setToken(jwt)
+
     error.value = ''
-    router.push('/dashboard') // redirect to dashboard after login
-  } else {
+    router.push('/dashboard')
+  } catch (err) {
     error.value = 'Invalid credentials'
   }
 }
